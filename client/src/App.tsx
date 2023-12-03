@@ -5,11 +5,11 @@ import { VIEWS } from "./data/constants/VIEWS";
 
 import { Home } from "./views/Home";
 import { HowToPlay } from "./views/info/GettingStarted";
-import { MultiPlayerHome } from "./views/multiPlayer/MultiPlayerHome";
-import { CreateMultiPlayerGame } from "./views/multiPlayer/host/CreateMultiPlayerGame";
-import { InviteParticipants } from "./views/multiPlayer/host/InviteParticipants";
-import { JoinLobby } from "./views/multiPlayer/guest/JoinLobby";
-import { WaitingForHost } from "./views/multiPlayer/guest/WaitingForHost";
+import { MultiPlayerHome } from "./views/multiplayer/MultiplayerHome";
+import { CreateMultiPlayerGame } from "./views/multiplayer/host/CreateMultiPlayerGame";
+import { InviteParticipants } from "./views/multiplayer/host/InviteParticipants";
+import { JoinLobby } from "./views/multiplayer/guest/JoinLobby";
+import { WaitingForHost } from "./views/multiplayer/guest/WaitingForHost";
 import { CreateSinglePlayerGame } from "./views/singlePlayer/CreateSinglePlayerGame";
 import { FindingPlayers } from "./views/singlePlayer/FindingPlayers";
 import { EVENTS } from "./data/constants/EVENTS";
@@ -26,10 +26,9 @@ import socket from "./socket";
 import { GameDataType } from "./data/types/ClassTypes";
 
 export const App = (): JSX.Element => {
-  
   const [view, setView] = useState("");
-  const [game, setGame] = useState<GameDataType | null>(null)
-  
+  const [game, setGame] = useState<GameDataType | null>(null);
+
   useEffect(() => {
     const sessionId = sessionStorage.getItem("sessionId");
 
@@ -41,29 +40,32 @@ export const App = (): JSX.Element => {
 
     socket.on(EVENTS.server.newSession, (sessionId: string) => {
       sessionStorage.setItem("sessionId", sessionId);
-      setView(VIEWS.home)
+      setView(VIEWS.home);
       setGame(null);
-    })
+    });
 
     socket.on(EVENTS.server.updateView, (view: string) => {
-      console.log(`View Updated ${view}`)
+      console.log(`View Updated ${view}`);
       setView(view);
-    })
+    });
 
     socket.on(EVENTS.server.updateGame, (gameData: GameDataType | null) => {
-      setGame(gameData)
-    })
+      setGame(gameData);
+    });
 
-    socket.on(EVENTS.server.updateClient, (gameData: GameDataType | null, view: string) => {
-      setGame(gameData)
-      setView(view);
-    })
-  }, [])
+    socket.on(
+      EVENTS.server.updateClient,
+      (gameData: GameDataType | null, view: string) => {
+        setGame(gameData);
+        setView(view);
+      }
+    );
+  }, []);
 
   const sessionId = sessionStorage.getItem("sessionId");
 
   if (sessionId) {
-    if (view === VIEWS.home) {      
+    if (view === VIEWS.home) {
       return (
         <Home
           game={game}
@@ -71,9 +73,9 @@ export const App = (): JSX.Element => {
           socket={socket}
           sessionId={sessionId}
         />
-      )
+      );
     }
-      
+
     if (view === VIEWS.info.howToPlay) {
       return (
         <HowToPlay
@@ -82,10 +84,10 @@ export const App = (): JSX.Element => {
           socket={socket}
           sessionId={sessionId}
         />
-      )
+      );
     }
 
-    if (view === VIEWS.multiPlayer.home) {      
+    if (view === VIEWS.multiPlayer.home) {
       return (
         <MultiPlayerHome
           game={game}
@@ -93,9 +95,9 @@ export const App = (): JSX.Element => {
           socket={socket}
           sessionId={sessionId}
         />
-      )
+      );
     }
-  
+
     if (view === VIEWS.multiPlayer.host.createLobby) {
       return (
         <CreateMultiPlayerGame
@@ -106,7 +108,7 @@ export const App = (): JSX.Element => {
         />
       );
     }
-  
+
     if (view === VIEWS.multiPlayer.host.inviteParticipants) {
       return (
         <InviteParticipants
@@ -117,7 +119,7 @@ export const App = (): JSX.Element => {
         />
       );
     }
-    
+
     if (view === VIEWS.multiPlayer.guest.joinLobby) {
       return (
         <JoinLobby
@@ -128,7 +130,7 @@ export const App = (): JSX.Element => {
         />
       );
     }
-  
+
     if (view === VIEWS.multiPlayer.guest.waitingForHost) {
       return (
         <WaitingForHost
@@ -161,7 +163,7 @@ export const App = (): JSX.Element => {
         />
       );
     }
-  
+
     if (view === VIEWS.gameplay.player.turn) {
       return (
         <PlayerTurn
@@ -172,7 +174,7 @@ export const App = (): JSX.Element => {
         />
       );
     }
-  
+
     if (view === VIEWS.gameplay.player.selectionMade) {
       return (
         <PlayerSelectionMade
@@ -183,7 +185,7 @@ export const App = (): JSX.Element => {
         />
       );
     }
-    
+
     if (view === VIEWS.gameplay.player.waitingForJudge) {
       return (
         <PlayerWaitingForJudge
@@ -194,7 +196,7 @@ export const App = (): JSX.Element => {
         />
       );
     }
-  
+
     if (view === VIEWS.gameplay.judge.waitingforSelections) {
       return (
         <JudgeWaitingForPlayers
@@ -205,7 +207,7 @@ export const App = (): JSX.Element => {
         />
       );
     }
-  
+
     if (view === VIEWS.gameplay.judge.turn) {
       return (
         <JudgeTurn
@@ -216,7 +218,7 @@ export const App = (): JSX.Element => {
         />
       );
     }
-    
+
     if (view === VIEWS.gameplay.results.round) {
       return (
         <RoundResults
@@ -238,7 +240,7 @@ export const App = (): JSX.Element => {
         />
       );
     }
-    
+
     if (view === VIEWS.gameplay.results.waitingForNextRound) {
       return (
         <WaitingForNextRound
@@ -249,7 +251,7 @@ export const App = (): JSX.Element => {
         />
       );
     }
-  
+
     if (view === VIEWS.gameplay.results.waitingForNextGame) {
       return (
         <WaitingForNextGame
@@ -262,7 +264,5 @@ export const App = (): JSX.Element => {
     }
   }
 
-  return (
-    <div></div>
-  )
-}
+  return <div></div>;
+};
